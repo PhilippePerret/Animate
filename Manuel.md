@@ -3,6 +3,7 @@
 
 * [Configuration générale de l'animation](#animation_general_config)
   * [Définir la taille de la vidéo](#define_anim_sizes)
+  * [Définir la durée de l'animation](#define_anim_duration)
   * [Définir le décompte](#define_config_decompte)
 * [Définition d'un objet](#define_an_objet)
   * [Définition précise de l'objet](#define_precisely_objet)
@@ -48,6 +49,22 @@ Anim.current.config = {
 }
 
 ```
+
+### Définir la durée de l'animation {#define_anim_duration}
+
+La durée de l'animation se définit à l'aide de la propriété `duration` dans la configuration :
+
+```javascript
+
+Anim.current.config = {
+  // ...
+  , duration:  nombre de secondes
+  // ...
+}
+
+```
+
+Par défaut, la durée d'une animation est de 1 minute.
 
 ### Définir le décompte {#define_config_decompte}
 

@@ -39,14 +39,16 @@ class Anim {
     }
   }
   run(){
+    console.log("-> Anim.run")
     const my = this
     this.runButton.innerHTML = '⏸'
     this.running = true
     Renderer.show()
     Builder.hide()
+    UI.showHorloge()
+    UI.hideConsole()
+    Timeline.reset()
     this.decompteAndStart()
-
-    setTimeout(my.start.bind(my), this.config.decompte * 1000)
   }
   decompteAndStart(){
     const my = this
@@ -65,20 +67,27 @@ class Anim {
     }, 1000)
   }
   start(){
+    console.log("-> Anim.start")
     Timeline.start()
   }
   stop(){
+    console.log("-> Anim.stop")
+    UI.hideHorloge()
+    UI.showConsole()
     this.runButton.innerHTML = '▶️'
-    Timeline.stop()
+    Timeline.stop.call(Timeline)
     this.running = false
     this.pausing = false
     Renderer.hide()
     Builder.show()
   }
   pause(){
+    console.log("-> Anim.pause")
     this.runButton.innerHTML = '▶️'
+    Timeline.stop.call(Timeline)
   }
   reprendre(){
+    console.log("-> Anim.reprendre")
     this.start()
   }
 
@@ -89,5 +98,10 @@ class Anim {
   observe(){
     this.runButton.addEventListener('click', this.toggleRun.bind(this))
     this.stopButton.addEventListener('click', this.stop.bind(this))
+  }
+
+  // Durée en nombre de secondes
+  get duration(){
+    return this._duration || ( this._duration = this.config.duration || 60)
   }
 }

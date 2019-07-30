@@ -23,5 +23,5 @@ const Footer = {
   }
 }
 Object.defineProperties(Footer,{
-  console:{get(){return document.querySelector('section#footer input#message')}}
+  console:{get(){return document.querySelector('section#footer input#console')}}
 })

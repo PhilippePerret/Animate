@@ -20,8 +20,8 @@ section#footer button.ctrl {
 }
 
 /* Pour le message */
-section#footer input#message {
-  display:inline-block;
+section#footer input#console {
+  /* display:inline-block; */
   float: left;
   margin-left:12px;
   width:400px;
@@ -31,10 +31,20 @@ section#footer input#message {
   text-align: left;
   padding: 1px 4px;
 }
+/* L'horloge pour afficher le temps pendant qu'on joue la vidéo */
+section#footer input#horloge {
+  background-color:black;
+  font-family: monospace;
+  font-size:10pt;
+  width:60px;
+  text-align:center;
+  float:left;
+}
 
 section#renderer {
   border: 4px solid blue;
   background-color: #00FF00;
+  overflow: hidden;
 }
 section#builder {
   background-color: black;
@@ -54,4 +64,21 @@ div#counter {
   padding: 4px;
   background-color: black;
   color:white;
+}
+
+section#timeline {
+  position:fixed;
+  bottom:35px;
+  left:4px;
+  height:50px;
+  width:100%;
+  background-color:black;
+}
+section#timeline div#cursor {
+  position: absolute;
+  height:50px;
+  width:3px;
+  background-color:green;
+  top:0;
+  left:0;
 }
