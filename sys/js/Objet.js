@@ -7,6 +7,14 @@
 **/
 class Objet {
 
+  // Retourne l'objet de nom +objet_name+
+  static get(objet_name){
+    return this.items.get(objet_name)
+  }
+  static add(objet){
+    if (undefined === this.items) this.items = new Map()
+    this.items.set(objet.name, objet)
+  }
   static select(objet){
     this.deselect(this._selected)
     this._selected = objet
@@ -31,6 +39,8 @@ class Objet {
       switch (prop) {
         case 'x': sel.camX = valInt; break;
         case 'y': sel.camY = valInt; break;
+        case 'h': sel.h = valInt; break;
+        case 'w': sel.w = valInt; break;
         default:
           console.error("Je ne sais pas traiter la propriété `%s`", prop)
       }
@@ -43,6 +53,9 @@ class Objet {
   constructor(data){
     this.data = data
     for(var k in data) this[k] = data[k]
+    // On l'ajoute à la liste des objets
+    this.constructor.add(this)
+
     var err = this.isValid()
     !err || raise(`L'objet ${JSON.stringify(data)} n'est pas valide : ${err}.`)
     // Quand on crée un objet, on crée automatiquement la balise chargeant
@@ -83,6 +96,7 @@ class Objet {
     if (this.img) {
       var i = document.createElement('IMG')
       i.src = `${this.folder}/img/${this.img}`
+      i.style = 'width:100%;'
       d.appendChild(i)
     } else if ( this.imgs ) {
 
@@ -100,8 +114,17 @@ class Objet {
   }
   // Pour jouer une action
   do(actionName){
-    let action = this.actions.get(actionName)
-    action.call(this)
+    switch (actionName) {
+      case 'show':
+        Renderer.append(this.obj)
+        break
+      case 'hide':
+        Renderer.remove(this.obj)
+        break
+      default:
+        let action = this.actions.get(actionName)
+        action.call(this)
+    }
   }
 
   // ---------------------------------------------------------------------
@@ -120,6 +143,12 @@ class Objet {
   get camY(){return this.y - Anim.current.camera.y}
   set camY(v){this.y = v + Anim.current.camera.y}
   get offset(){return $(this.obj).offset()}
+  // Largeur
+  get w(){return $(this.obj).width}
+  set w(v){$(this.obj).css('width', `${v}px`)}
+  // Hauteur
+  get h(){return $(this.obj).height}
+  set h(v){$(this.obj).css('height', `${v}px`)}
 
 
   // ---------------------------------------------------------------------
@@ -129,6 +158,10 @@ class Objet {
     const my = this
     $(this.obj).draggable({stop: my.endDrag.bind(my), drag:my.onDrag.bind(my)})
     $(this.obj).on('click', my.select.bind(my))
+    $(this.obj).resizable({
+        aspectRatio:true, ghost:true
+      , stop:my.writeSize.bind(my)
+    })
   }
 
   // Méthode appelée quand on a fini de dragguer l'objet
@@ -140,6 +173,12 @@ class Objet {
   // Méthode appelée pendant qu'on draggue l'objet
   onDrag(e){
     Footer.write(`x=${this.camX} y=${this.camY}`)
+  }
+
+  // Méthode appelée quand on a fini de redimensionner l'élément
+  writeSize(e, ui){
+    console.log("ui = ", ui)
+    Footer.write(`w=${Math.round(ui.size.width)} h=${Math.round(ui.size.height)}`)
   }
 
   select(e){
@@ -161,5 +200,9 @@ class Objet {
   // Note : pour les src et href des images, css, etc.
   get folder(){
     return this._folder || ( this._folder = `animation/objets/${this.name}` )
+  }
+
+  get id(){
+    return this.name
   }
 }

@@ -39,13 +39,37 @@ class Anim {
     }
   }
   run(){
+    const my = this
     this.runButton.innerHTML = '⏸'
     this.running = true
     Renderer.show()
     Builder.hide()
+    this.decompteAndStart()
+
+    setTimeout(my.start.bind(my), this.config.decompte * 1000)
+  }
+  decompteAndStart(){
+    const my = this
+    this.config.decompte || ( this.config.decompte = 3)
+    UI.showCounter(this.config.decompte)
+    my.decompteTimer = setInterval(()=>{
+      -- my.config.decompte
+      if ( my.config.decompte < 0 ) {
+        clearInterval(my.decompteTimer)
+        my.decompteTimer = null
+        UI.hideCounter()
+        my.start()
+      } else {
+        UI.compteur.innerHTML = my.config.decompte
+      }
+    }, 1000)
+  }
+  start(){
+    Timeline.start()
   }
   stop(){
     this.runButton.innerHTML = '▶️'
+    Timeline.stop()
     this.running = false
     this.pausing = false
     Renderer.hide()
@@ -55,7 +79,7 @@ class Anim {
     this.runButton.innerHTML = '▶️'
   }
   reprendre(){
-    this.run()
+    this.start()
   }
 
   get runButton(){return document.querySelector('#btn-run')}

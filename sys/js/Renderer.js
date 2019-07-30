@@ -7,6 +7,13 @@ const Renderer = {
   show(){ this.obj.className = ''; this.fixeDimensions() }
 , hide(){ this.obj.className = 'hidden'}
 
+, append(node){
+    this.obj.appendChild(node)
+  }
+, remove(node){
+    // Pour effacer un objet, on le remet dans le builder
+    Builder.append(node)
+  }
   // Méthode qui permet de fixer les dimensions du rendu en fonction
   // des défintions de l'animation (fichier config.js)
   // Voir le dessin sur https://fr.wikipedia.org/wiki/Définition_d%27écran#/media/Fichier:Vector_Video_Standards8.svg

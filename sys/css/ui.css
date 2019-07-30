@@ -42,3 +42,16 @@ section#builder {
   position:relative;
 
 }
+
+div#counter {
+  position: fixed;
+  right: 4px;
+  top: 4px;
+  font-size: 30pt;
+  font-family: Monospace;
+  width: 60px;
+  text-align: center;
+  padding: 4px;
+  background-color: black;
+  color:white;
+}
