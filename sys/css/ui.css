@@ -1,0 +1,17 @@
+section#footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  background-color:grey;
+  color:white;
+  width:100%;
+  text-align: right;
+}
+section#footer * {
+  color:white;
+  background-color:grey;
+}
+/* Tous les boutons de controleur */
+section#footer button.ctrl {
+  all: initial;
+}
