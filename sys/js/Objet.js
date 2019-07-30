@@ -27,6 +27,15 @@ class Objet {
     this.deselect(this._selected) // pour le moment, un seul
   }
 
+  static resetAllItems(){
+    console.log("-> Objet::resetAllItems")
+    this.items.forEach( o => o.reset() )
+  }
+
+  static appendAllToBuilder(){
+    this.items.forEach( o => o.add2Builder() )
+  }
+
   static modifySelection(code){
     if ( ! this._selected ) return
     const sel = this._selected
@@ -116,10 +125,11 @@ class Objet {
   do(actionName){
     switch (actionName) {
       case 'show':
-        Renderer.append(this.obj)
+        this.obj.style = ''
+        this.add2Renderer()
         break
       case 'hide':
-        Renderer.remove(this.obj)
+        this.add2Builder()
         break
       default:
         let action = this.actions.get(actionName)
@@ -127,8 +137,14 @@ class Objet {
     }
   }
 
+  add2Renderer(){ Renderer.append(this.obj)}
+  add2Builder() { Builder.append(this.obj)}
   // ---------------------------------------------------------------------
   //  MÉTHODES DE POSITIONS ET POSITIONNEMENT
+
+  reset(){
+    delete this.obj.style
+  }
 
   // Position horizontale dans le Builder
   get x(){return this.offset.left}

@@ -6,7 +6,11 @@ const UI = {
   // Pour l'horloge de temps
 , showHorloge(time){this.setHorloge(time || 0); this.horloge.className = ''}
 , hideHorloge(){this.horloge.className = 'hidden'}
-, setHorloge(time){this.horloge.value = String(time).padEnd(3,'.0')}
+, setHorloge(time){
+    var secs = Math.round(time / 1000)
+    var frms = Math.floor((time % 1000) / Timeline.CLICK_LEN )
+    this.horloge.value = `${String(secs).padStart(3)}.${String(frms).padStart(2,'0')}`
+  }
 
   // La console pour entrer des valeurs
 , showConsole(){this.console.className = ''}

@@ -23,6 +23,7 @@ class Anim {
     await Document.addScriptAnim('timeline')
     this.observe()
     Builder.init() // règle aussi les dimensions
+
     // On crée une caméra pour l'animation
     this.camera = new Camera(this)
     this.camera.init()
@@ -47,6 +48,7 @@ class Anim {
     Builder.hide()
     UI.showHorloge()
     UI.hideConsole()
+    Objet.resetAllItems()
     Timeline.reset()
     this.decompteAndStart()
   }
@@ -78,8 +80,11 @@ class Anim {
     Timeline.stop.call(Timeline)
     this.running = false
     this.pausing = false
+    Timeline.setCursor(0)
     Renderer.hide()
     Builder.show()
+    Objet.resetAllItems()
+    Objet.appendAllToBuilder()
   }
   pause(){
     console.log("-> Anim.pause")

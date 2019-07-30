@@ -3,7 +3,7 @@
 const Timeline = {
 
   currentTime: 0
-, CLICK_LEN: 100 // tous les dizièmes de seconde
+, CLICK_LEN: 1000/24 // tous les 24e de seconde
 
 , reset(){
     console.log("-> Timeline.reset")
@@ -15,13 +15,13 @@ const Timeline = {
 , start(){
     console.log("-> Timeline.start")
     const my = this
-    this.setCursor(this.currentTime / 1000)
+    this.setCursor(this.currentTime)
     this.timer = setInterval(my.checkTime.bind(my), my.CLICK_LEN)
   }
 , checkTime(){
     if ( ! this.nextStep ) return
     this.currentTime += this.CLICK_LEN
-    this.setCursor(this.currentTime / 1000)
+    this.setCursor(this.currentTime)
     ++ this.currentFrame
     if ( this.currentFrame >= this.nextStep.frame) {
       this.nextStep.exec()
@@ -37,10 +37,9 @@ const Timeline = {
     console.log("-> Timeline.stop", this.timer)
     clearInterval(this.timer)
     this.timer = null
-    this.setCursor(0)
   }
 , setCursor(time){
-    this.cursor.style.left = `${Math.round(time * this.coefT2P)}px`
+    this.cursor.style.left = `${Math.round((time / 1000) * this.coefT2P)}px`
     UI.setHorloge(time)
   }
 , calcCoefT2P(){
