@@ -1,3 +1,3 @@
 # Animate
 
-Simple petit programme pour faire des animations.
+Simple petit programme pour faire des animations. Voir le manuel.

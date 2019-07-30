@@ -1,0 +1,6 @@
+div.camera {
+  position: absolute;
+  border: 2px solid red;
+  background-color:transparent;
+  z-index: 0;
+}

@@ -6,6 +6,9 @@ section#footer {
   color:white;
   width:100%;
   text-align: right;
+  padding-top:8px;
+  padding-bottom:4px;
+  z-index: 4000;
 }
 section#footer * {
   color:white;
@@ -14,4 +17,28 @@ section#footer * {
 /* Tous les boutons de controleur */
 section#footer button.ctrl {
   all: initial;
+}
+
+/* Pour le message */
+section#footer input#message {
+  display:inline-block;
+  float: left;
+  margin-left:12px;
+  width:400px;
+  font-size: 11pt;
+  font-family: inherit;
+  background-color: black;
+  text-align: left;
+  padding: 1px 4px;
+}
+
+section#renderer {
+  border: 4px solid blue;
+  background-color: #00FF00;
+}
+section#builder {
+  background-color: black;
+  width: 100%;
+  position:relative;
+
 }

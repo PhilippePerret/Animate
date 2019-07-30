@@ -1,0 +1,11 @@
+div.objet-conteneur {
+  position: absolute;
+  z-index: 10;
+}
+div.objet-conteneur:not(.selected){
+  border:1px solid transparent;
+}
+
+.selected {
+  border:1px solid green;
+}

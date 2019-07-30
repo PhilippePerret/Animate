@@ -13,9 +13,19 @@ class Anim {
 
   // ---------------------------------------------------------------------
 
-  //
-  init(){
+  // Méthode principale appelée à l'ouverture de la page, quand elle
+  // est prête.
+  async init(){
+    Footer.init()
+    // Quand on est prêt on charge les fichiers de l'animation
+    await Document.addScriptAnim('config')
+    await Document.addScriptAnim('objets')
+    await Document.addScriptAnim('timeline')
     this.observe()
+    Builder.init() // règle aussi les dimensions
+    // On crée une caméra pour l'animation
+    this.camera = new Camera(this)
+    this.camera.init()
   }
 
   // Méthodes de controleur
@@ -31,11 +41,15 @@ class Anim {
   run(){
     this.runButton.innerHTML = '⏸'
     this.running = true
+    Renderer.show()
+    Builder.hide()
   }
   stop(){
     this.runButton.innerHTML = '▶️'
     this.running = false
     this.pausing = false
+    Renderer.hide()
+    Builder.show()
   }
   pause(){
     this.runButton.innerHTML = '▶️'

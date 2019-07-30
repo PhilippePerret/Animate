@@ -4,8 +4,11 @@ const Document = {
 
   // Pour ajouter une balise script
   addScriptAnim(name){
-    var t = document.createElement('SCRIPT')
-    t.src = `animation/js/${name}.js`
-    document.body.appendChild(t)
+    return new Promise((ok,ko) => {
+      var t = document.createElement('SCRIPT')
+      t.src = `animation/${name}.js`
+      document.body.appendChild(t)
+      t.addEventListener('load', ok)
+    })
   }
 }

@@ -5,12 +5,21 @@
     <title>ANIMATE</title>
     <script type="text/javascript" src="sys/js/jquery.min.js"></script>
     <script type="text/javascript" src="sys/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="sys/js/UI.js"></script>
+    <script type="text/javascript" src="sys/js/handy.js"></script>
     <script type="text/javascript" src="sys/js/Document.js"></script>
+    <script type="text/javascript" src="sys/js/Camera.js"></script>
     <script type="text/javascript" src="sys/js/Anim.js"></script>
     <script type="text/javascript" src="sys/js/Objet.js"></script>
+    <script type="text/javascript" src="sys/js/Footer.js"></script>
+    <script type="text/javascript" src="sys/js/Renderer.js"></script>
+    <script type="text/javascript" src="sys/js/Builder.js"></script>
     <script type="text/javascript" src="sys/js/onready.js"></script>
 
     <link rel="stylesheet" href="sys/css/ui.css">
+    <link rel="stylesheet" href="sys/css/common.css">
+    <link rel="stylesheet" href="sys/css/objet.css">
+    <link rel="stylesheet" href="sys/css/camera.css">
   </head>
   <body>
 
@@ -19,11 +28,12 @@
     </section>
 
 
-    <section id="render">
+    <section id="renderer" class="hidden">
       <!-- POUR JOUER L'ANIMATION -->
     </section>
 
     <section id="footer">
+      <input type="text" id="message" value="---">
       <button type="button" class="ctrl" id="btn-goto-0">0️⃣</button>
       <button type="button" class="ctrl" id="btn-goto-1">1️⃣</button>
       <button type="button" class="ctrl" id="btn-goto-2">2️⃣</button>
@@ -43,6 +53,7 @@
       <button type="button" class="ctrl" id="btn-back">⏮</button>
       <button type="button" class="ctrl" id="btn-run" class="ctrl">▶️</button>
       <button type="button" class="ctrl" id="btn-stop" class="ctrl">⏹</button>
+      <span style="display:inline-block;width:40px;">&nbsp;</span>
     </section>
 
   </body>
