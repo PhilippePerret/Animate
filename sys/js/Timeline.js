@@ -19,18 +19,20 @@ const Timeline = {
     this.timer = setInterval(my.checkTime.bind(my), my.CLICK_LEN)
   }
 , checkTime(){
-    if ( ! this.nextStep ) return
     this.currentTime += this.CLICK_LEN
     this.setCursor(this.currentTime)
     ++ this.currentFrame
-    if ( this.currentFrame >= this.nextStep.frame) {
-      this.nextStep.exec()
-      ++ this.istep
-      delete this._nextstep
-      if ( ! this.nextStep ) {
-        // Pas d'étape suivante
-        Anim.current.stop()
+    if ( this.nextStep ) {
+      // S'il y a une étape suivante
+      if ( this.currentFrame >= this.nextStep.frame) {
+        this.nextStep.exec()
+        ++ this.istep
+        delete this._nextstep
       }
+    }
+    // Si on arrive au bout du temps
+    if ( this.currentTime > Anim.current.duration * 1000 ) {
+      Anim.current.stop()
     }
   }
 , stop(){

@@ -5,5 +5,5 @@ Anim.current.config = {
   , height:   200
   , decompte: 1
   , speed:    0.1 // 1 = vitesse normale
-  , duration: 20  // nombre de secondes
+  , duration: 10  // nombre de secondes
 }

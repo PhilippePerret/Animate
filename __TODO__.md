@@ -1,3 +1,5 @@
-* Faire un cadre intérieur pour la vidéo (ou plutôt un cadre qui représente, à tout moment, la caméra)
+* Rendre la caméra draggable
+* Liste des objets présents (caméra comprise) avec des boutons pour les faire apparaitre, les supprimer, les rendre non sélectionnables, comme dans Blender
+
 * Des lignes repères draggables.
 * Une grille

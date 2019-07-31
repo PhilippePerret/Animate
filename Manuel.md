@@ -87,7 +87,8 @@ Tous les objets doivent impérativement se définir dans le fichier `animation/o
 ```javascript
 
 const JON = new Objet({
-  name: "Jon", img: 'jon.png'
+    name: "Jon"
+  , img: 'jon.png'
 })
 
 ```
@@ -95,6 +96,22 @@ const JON = new Objet({
 La propriété `name` est obligatoire et permet de charger le fichier `animation/objets/Jon/objet.js` qui est la définition précise de l'objet, avec ses actions, ses propriétés changeantes, etc.
 
 Un objet peut être défini par une image (propriété `img`), un ensemble d'images (propriété `imgs`) ou un code HTML (propriété `html`). Dans tous les cas une de ces trois propriétés doit être définies, sinon une erreur est générée.
+
+La propriété `props` permet de définir la taille et la position de l'objet, ainsi que différentes autres propriétés. C'est un `String` qui contient des paires `prop=value` séparées par des espaces. Par exemple : `"w=100 x=12 r=-32"` qui signifie : une largeur (width) de 100 pixels, une position top à 12 pixels et une rotation de -32 degrés.
+
+Propriétés utilisables dans `props` :
+
+```
+
+  x   Position left/horizontale
+  y   Position top/verticale
+  w   Largeur de l'objet. Si non défini, dépendra de h.
+  h   Hauteur de l'objet. Si non défini, dépendra de w.
+  r   Rotation de l'objet, en degrés.
+
+```
+
+Notez que toutes ces propriétés seront réinterprétées en fonction de la taille et la position de la caméra.
 
 ### Définition précise de l'objet {#define_precisely_objet}
 

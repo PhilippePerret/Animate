@@ -9,7 +9,12 @@ class Objet {
 
   // Retourne l'objet de nom +objet_name+
   static get(objet_name){
-    return this.items.get(objet_name)
+    switch (objet_name) {
+      case 'Camera':
+        return Anim.current.camera
+      default:
+        return this.items.get(objet_name)
+    }
   }
   static add(objet){
     if (undefined === this.items) this.items = new Map()
@@ -40,20 +45,7 @@ class Objet {
     if ( ! this._selected ) return
     const sel = this._selected
     console.log("Je dois modifier la sélection avec %s", code)
-    // On décompose par pair
-    for( var paire of code.split(' ')){
-      var [prop, valStr] = paire.split('=')
-      console.log("Mettre `%s` à %s", prop, valStr)
-      var valInt = parseInt(valStr,10)
-      switch (prop) {
-        case 'x': sel.camX = valInt; break;
-        case 'y': sel.camY = valInt; break;
-        case 'h': sel.h = valInt; break;
-        case 'w': sel.w = valInt; break;
-        default:
-          console.error("Je ne sais pas traiter la propriété `%s`", prop)
-      }
-    }
+    this._selected.setProps(code)
   }
 
   // ---------------------------------------------------------------------
@@ -62,14 +54,22 @@ class Objet {
   constructor(data){
     this.data = data
     for(var k in data) this[k] = data[k]
-    // On l'ajoute à la liste des objets
-    this.constructor.add(this)
 
+    // On regarde si cet objet est valide
     var err = this.isValid()
     !err || raise(`L'objet ${JSON.stringify(data)} n'est pas valide : ${err}.`)
+
+    // On ajoute cet objet à la liste des objets
+    this.constructor.add(this)
+
     // Quand on crée un objet, on crée automatiquement la balise chargeant
     // ses détails
-    this.buildTag()
+    this.buildScriptTag()
+
+    // Si des propriétés ont été définies, il faut les prendre pour
+    // pouvoir les appliquer dans la construction de l'objet
+    if ( this.props ) this.setProps(this.props)
+
     // On crée l'objet
     this.buildObjet()
     // On observe l'objet
@@ -77,6 +77,7 @@ class Objet {
   }
 
 
+  // Retourne un message d'erreur si l'objet n'est pas valide
   isValid(){
     try {
       this.name || raise("la propriété `name` doit être définie", false)
@@ -85,7 +86,30 @@ class Objet {
       return e.message
     }
   }
-  buildTag(){
+
+  // Dispatche les propriétés +props+
+  // @param {String} props Liste de paire prop=val séparées par des espaces
+  setProps(props){
+    for( var paire of props.split(' ')){
+      var [prop, valStr] = paire.split('=')
+      // console.log("Mettre `%s` à %s", prop, valStr)
+      var valInt = parseInt(valStr,10)
+      switch (prop) {
+        case 'x':
+        case 'y':
+        case 'h':
+        case 'w':
+        case 'r':
+          this[prop] = valInt; break
+        default:
+          console.error("Je ne sais pas traiter la propriété `%s` de l'objet %s.", prop, this.name)
+      }
+    }
+  }
+
+  // Construction de la balise <script> qui charge la définition des
+  // actions et états de l'objet.
+  buildScriptTag(){
     var tag = document.createElement('SCRIPT')
     tag.src = `${this.folder}/objet.js`
     document.body.appendChild(tag)
@@ -98,10 +122,12 @@ class Objet {
       document.body.appendChild(tag)
     }
   }
+
   buildObjet(){
     var d = document.createElement('DIV')
     d.id = this.name
     d.className = 'objet-conteneur'
+    d.style = this.defaultStyle
     if (this.img) {
       var i = document.createElement('IMG')
       i.src = `${this.folder}/img/${this.img}`
@@ -117,6 +143,9 @@ class Objet {
     d = null
   }
 
+  // ---------------------------------------------------------------------
+  //  MÉTHODES D'ANIMATION
+
   addAction(actionName, actionFunction){
     if (undefined === this.actions) this.actions = new Map()
     this.actions.set(actionName, actionFunction)
@@ -125,7 +154,7 @@ class Objet {
   do(actionName){
     switch (actionName) {
       case 'show':
-        this.obj.style = ''
+        this.setInRenderer()
         this.add2Renderer()
         break
       case 'hide':
@@ -137,35 +166,64 @@ class Objet {
     }
   }
 
-  add2Renderer(){ Renderer.append(this.obj)}
-  add2Builder() { Builder.append(this.obj)}
+  add2Renderer() { Renderer.append(this.obj)}
+  add2Builder()  { Builder.append(this.obj)}
+
   // ---------------------------------------------------------------------
   //  MÉTHODES DE POSITIONS ET POSITIONNEMENT
 
+  // Positionne et dimensionne l'objet dans le renderer en fonction des
+  // données courantes.
+  // Ces données peuvent être modifiées en fonction du ratio de la caméra
+  // courante et de sa position.
+  setInRenderer(){
+    let p = []
+      , cam = Anim.current.camera
+    p.push(`left:${this.x - cam.x}px;`)
+    p.push(`top:${this.y - cam.y}px;`)
+    if ( this.w ) p.push(`${Math.round(this.w / cam.r)}px;`)
+    if ( this.h ) p.push(`${Math.round(this.h / cam.r)}px;`)
+    this.obj.style = p.join('')
+  }
+
   reset(){
-    delete this.obj.style
+    this.obj.style = this.defaultStyle
+  }
+
+  // Style par défaut (dans le builder)
+  get defaultStyle(){
+    if ( undefined === this._defaultstyle ) {
+      this._defaultstyle = `left:${this.x}px;top:${this.y}px;width:${this.w}px;`
+      if ( this.r ) this._defaultstyle += `transform:rotate(${this.r}deg)`
+    }
+    return this._defaultstyle
   }
 
   // Position horizontale dans le Builder
-  get x(){return this.offset.left}
-  set x(v){$(this.obj).css('left', `${v}px`)}
-  // Position horizontale par rapport à la caméra
-  get camX(){return this.x - Anim.current.camera.x}
-  set camX(v){this.x = v + Anim.current.camera.x}
-  // Position verticale dans le Builder
-  get y(){return this.offset.top}
-  set y(v){$(this.obj).css('top', `${v}px`)}
-  // Position verticale par rapport à la caméra courante
-  get camY(){return this.y - Anim.current.camera.y}
-  set camY(v){this.y = v + Anim.current.camera.y}
-  get offset(){return $(this.obj).offset()}
-  // Largeur
-  get w(){return $(this.obj).width}
-  set w(v){$(this.obj).css('width', `${v}px`)}
-  // Hauteur
-  get h(){return $(this.obj).height}
-  set h(v){$(this.obj).css('height', `${v}px`)}
+  get x(){return this._x || 10}
+  set x(v){this._x = v}
+  getX(){return this.offset.left}
+  setX(){$(this.obj).css('left', `${this.x}px`)}
 
+  // Position verticale dans le Builder
+  get y(){return this._y || 10}
+  set y(v){this._y = v}
+  getY(){return this.offset.top}
+  setY(){$(this.obj).css('top', `${this.y}px`)}
+
+  // Largeur
+  get w(){return this._w}
+  set w(v){this._w = v}
+  getW(){return $(this.obj).width}
+  setW(){$(this.obj).css('width', `${this.w}px`)}
+
+  // Hauteur
+  get h(){return this._h}
+  set h(v){this._h = v}
+  getH(){return $(this.obj).height}
+  setH(){$(this.obj).css('height', `${this.h}px`)}
+
+  get offset(){return $(this.obj).offset()}
 
   // ---------------------------------------------------------------------
   //  Méthodes évènementielles
@@ -183,18 +241,17 @@ class Objet {
   // Méthode appelée quand on a fini de dragguer l'objet
   endDrag(e){
     // console.log("x: %d, y:%d, camera-x: %d, camera-y: %d", this.x, this.y, Anim.current.camera.x, Anim.current.camera.y)
-    Footer.write(`x=${this.camX} y=${this.camY}`)
+    Console.write(`x=${this.getX()} y=${this.getY()}`)
     if ( ! this.isSelected ) this.select(e)
   }
   // Méthode appelée pendant qu'on draggue l'objet
   onDrag(e){
-    Footer.write(`x=${this.camX} y=${this.camY}`)
+    Console.write(`x=${this.getX()} y=${this.getY()}`)
   }
 
   // Méthode appelée quand on a fini de redimensionner l'élément
   writeSize(e, ui){
-    console.log("ui = ", ui)
-    Footer.write(`w=${Math.round(ui.size.width)} h=${Math.round(ui.size.height)}`)
+    Console.write(`w=${Math.round(ui.size.width)} h=${Math.round(ui.size.height)}`)
   }
 
   select(e){
@@ -203,6 +260,7 @@ class Objet {
     this.isSelected = true
     return stopEvent(e)
   }
+
   deselect(){
     this.constructor.deselect(this, /* keep = */ e.shiftKey)
     this.isSelected = false

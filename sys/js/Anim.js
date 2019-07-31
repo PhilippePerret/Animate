@@ -50,21 +50,22 @@ class Anim {
     UI.hideConsole()
     Objet.resetAllItems()
     Timeline.reset()
+    this.config.decompte || ( this.config.decompte = 3)
     this.decompteAndStart()
   }
   decompteAndStart(){
     const my = this
-    this.config.decompte || ( this.config.decompte = 3)
-    UI.showCounter(this.config.decompte)
+    var count = Number(this.config.decompte)
+    UI.showCounter(count)
     my.decompteTimer = setInterval(()=>{
-      -- my.config.decompte
-      if ( my.config.decompte < 0 ) {
+      -- count
+      if ( count < 0 ) {
         clearInterval(my.decompteTimer)
         my.decompteTimer = null
         UI.hideCounter()
         my.start()
       } else {
-        UI.compteur.innerHTML = my.config.decompte
+        UI.compteur.innerHTML = count
       }
     }, 1000)
   }
